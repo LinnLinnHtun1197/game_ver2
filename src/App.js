@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
-import { Tutorial } from "./components/";
+import { Tutorial,Finish } from "./components/";
 import { Game } from "./containers/";
 
 const App = () => {
@@ -8,8 +8,9 @@ const App = () => {
     <div className="ui container">
       <BrowserRouter>
         <div>
-            <Route path="/" exact component={Tutorial} />
-            <Route path="/game" render={()=><Game boardSize={20} playerSize={25} /> }/>
+            <Route path="/game"  component={Tutorial} />
+            <Route path="/" exact render={()=><Game boardSize={10} playerSize={85}/> }/>
+            <Route path="/finish" component={Finish} />
         </div> 
       </BrowserRouter>
     </div>

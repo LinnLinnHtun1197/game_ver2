@@ -1,12 +1,13 @@
 import React from 'react';
 
 const style = ({ size, position, color,display }) => {
-    const dim = size + 'px';
+    const dim = size +'px';
     return {
         width: dim,
         height: dim,
-        borderRadius: 50+'%' ,
+        borderRadius: 50+'%',
         backgroundColor: color,
+        background: '../../public/robot.png',
         position: 'absolute',
         top: position.top + 'px',
         left: position.left + 'px',

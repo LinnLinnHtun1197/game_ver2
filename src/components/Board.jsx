@@ -5,7 +5,7 @@ const style = (dimension) => {
     return {
         width: dim,
         height: dim,
-        border: '5px solid #20002b',
+        border: '1px solid #f2f2f2',
         position: 'relative',
         margin: '25px auto',
         overflow: 'hidden'

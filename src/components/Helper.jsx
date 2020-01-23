@@ -25,7 +25,8 @@ class Helper extends Component {
             <Square 
                 size={size}
                 position={{ top, left }}
-                color='green' />
+                color='green'/>
+                // <img src={'../../public/robot.png'} alt="robot" width="100px" height="100px"/>
             
         );
     }

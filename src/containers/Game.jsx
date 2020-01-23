@@ -3,7 +3,7 @@ import axios from 'axios';
 import { GameInfo, Board, Player, Enemy, DebugState, Helper,Data} from 'components';
 import { UP, DOWN, LEFT, RIGHT } from 'helpers/constants';
 import { pluck } from 'helpers/utils';
-
+import { Link } from 'react-router-dom';
 /*
     Since my api key is not publicly available,
     cloned versions will lack the ability to post
@@ -23,7 +23,7 @@ const getDefaultState = ({ boardSize, playerSize, highScore = 0 }) => {
         },
         positions: {
             player: {
-                top: 475,
+                top: 760,
                 left: half
             },
             enemies: [],
@@ -35,6 +35,8 @@ const getDefaultState = ({ boardSize, playerSize, highScore = 0 }) => {
             cyber_security: [],
             tech_service: []
         },
+        itemName: '',
+        itemScore: '',
         playerScore: 0,
         baseScore: 10,
         highScore,
@@ -84,10 +86,13 @@ export default class Game extends Component {
     }
 
     placeEnemy = () => {
+        // console.log(this.state.positions)
         // enemies always launch at player
         const { player, maxDim } = this.state.size;
         const { player: playerPos } = this.state.positions;
         const enemyValue = this.state.enemyValue;
+        const itemName = this.state.itemName;
+        const itemValue = this.state.itemValue;
 
         // console.log(playerPos);
 
@@ -96,8 +101,7 @@ export default class Game extends Component {
         const side = pluck([DOWN]);
 
         // generate enemy object
-        const newEnemy = this.generateNewEnemy(playerPos, side, enemyValue);
-
+        const newEnemy = this.generateNewEnemy(playerPos, side, enemyValue,itemName,itemValue);
         // add new enemy to state
         this.setState({
             positions: {
@@ -107,22 +111,22 @@ export default class Game extends Component {
         });
     }
 
-    generateNewEnemy = (position, side, enemyValue) => {
+    generateNewEnemy = (position, side, enemyValue,itemName,itemValue) => {
         this.setState({
-            enemyIndex: this.state.enemyIndex + 1
+            enemyIndex: this.state.enemyIndex + 2
         });
 
-        const newEnemy = { key: this.state.enemyIndex, dir: side, enemyValue: enemyValue };
+        const newEnemy = { key: this.state.enemyIndex, dir: side, enemyValue: enemyValue,itemName:itemName,itemValue:itemValue };
         const { maxDim, player } = this.state.size;
 
         switch(side) {
             case UP:
                 newEnemy.top = maxDim;
-                newEnemy.left = position.left;
+                newEnemy.left = position.left+100;
                 break;
             case DOWN:
                 newEnemy.top = 0 - player;
-                newEnemy.left = position.left;
+                newEnemy.left = position.left+100;
                 break;
             case LEFT:
                 newEnemy.top = position.top;
@@ -137,7 +141,7 @@ export default class Game extends Component {
         return newEnemy;
     }
 
-    // Helper Start
+// Helper Start
 
     placeHelper = () => {
         // console.log(this.state.helperValue);
@@ -145,6 +149,7 @@ export default class Game extends Component {
         const { player: playerPos } = this.state.positions;
         const side = pluck([DOWN]);
         const helperValue = this.state.helperValue;
+        
         const newHelper = this.generateNewHelper(playerPos, side, helperValue);
         this.setState({
             positions: {
@@ -164,11 +169,11 @@ export default class Game extends Component {
         switch(side) {
             case UP:
                 newHelper.top = maxDim;
-                newHelper.left = position.left;
+                newHelper.left = position.left-200;
                 break;
             case DOWN:
                 newHelper.top = 0 - player;
-                newHelper.left = position.left;
+                newHelper.left = position.left-200;
                 break;
             case LEFT:
                 newHelper.top = position.top;
@@ -270,12 +275,12 @@ generateNewData = (position, side, dataValue) => {
     startGame = () => {
         this.enemyInterval = setInterval(this.updateEnemyPositions, 50);
         this.helperInterval = setInterval(this.updateHelperPositions, 50);
-        this.dataInterval = setInterval(this.dataIntervalPositions, 50);
+        // this.dataInterval = setInterval(this.dataIntervalPositions, 50);
         // this.timeInterval = setInterval(this.updateGame, 1000);
         this.timeInterval = setInterval(this.updateGame, 700);
         this.gameInterval = setInterval(this.updateEnemiesInPlay, 250);
         this.gameInterval1 = setInterval(this.updateHelpersInPlay, 250);
-        this.gameInterval2 = setInterval(this.updateDataInPlay, 250);
+        // this.gameInterval2 = setInterval(this.updateDataInPlay, 250);
     }
 
     updateGame = () => {
@@ -287,11 +292,11 @@ generateNewData = (position, side, dataValue) => {
         if (timeElapsed > 0) {
 
             // increment enemy speed
-            if (timeElapsed % 4 === 0) {
+            if (timeElapsed % 2 === 0) {
                 this.incrementEnemySpeed();
             }
             // increment helper speed
-            if (timeElapsed % 4 === 0) {
+            if (timeElapsed % 2 === 0) {
                 this.incrementHelperSpeed();
             }
             // increment data speed
@@ -317,6 +322,7 @@ generateNewData = (position, side, dataValue) => {
     }
 
     updateEnemyPositions = () => {
+        // console.log(this.state.enemies)
         const { enemySpeed, positions: { enemies }, size: { player, maxDim }} = this.state;
 
         this.setState({
@@ -507,6 +513,8 @@ generateNewData = (position, side, dataValue) => {
         // const { timeElapsed, playerSize } = this.state;
         // const { playerScore, highScore, globalHighScore, debug } = this.state;
         this.state.playerScore = this.state.playerScore - 1;
+        this.state.itemName = "Cyber Security";
+        this.state.itemValue = "-31";
         // this.setState({
         //     ...getAfterEnemy({ timeElapsed, playerSize }),
         //     debug,
@@ -523,6 +531,8 @@ generateNewData = (position, side, dataValue) => {
         const { timeElapsed, playerSize } = this.state;
         const { playerScore, highScore, globalHighScore, debug } = this.state;
         this.state.playerScore = playerScore + 10;
+        this.state.itemName = "Data Science";
+        this.state.itemValue = "+500";
         // const { timeElapsed, playerSize } = this.state;
         // const { playerScore, highScore, globalHighScore, debug } = this.state;
 
@@ -612,7 +622,7 @@ generateNewData = (position, side, dataValue) => {
     style = () => {
         return {
             width: '85%',
-            maxWidth: '600px',
+            maxWidth: '800px',
             margin: '0 auto'
         };
     }
@@ -628,13 +638,22 @@ generateNewData = (position, side, dataValue) => {
         } = this.state;
 
         return (
+            <div>
+            <div style={{position:'absolute',marginTop:'-40px'}}>
+                <img src={'../../public/b.gif'} alt="af" width="1000vh" height="1750vh"/>
+            </div>
+            <div style={{position:'relative'}}>
             <div style={this.style()}>
                 <GameInfo
                     playerScore={playerScore}
                     timeElapsed={timeElapsed}
                     highScore={highScore}
                     globalHighScore={globalHighScore} />
-
+                <div style={{textAlign:'center',fontSize: 2 + 'rem'}}>
+                    <Link to="/finish">
+                        Final Page
+                    </Link>
+                </div>
                 <Board dimension={board * player}>
                     <Player
                         size={player}
@@ -648,7 +667,9 @@ generateNewData = (position, side, dataValue) => {
                                 info={enemy}
                                 playerPosition={playerPos}
                                 onCollide={this.enemyscore}
-                                enemyValue={this.state.enemyValue} />
+                                enemyValue={this.state.enemyValue}
+                                itemName={this.state.itemName}
+                                itemValue={this.state.itemValue} />
                         )
 
                     }
@@ -673,8 +694,15 @@ generateNewData = (position, side, dataValue) => {
                         )
                     } */}
                 </Board>
+                <div style={{marginTop: 200+'px'}}>
+                <p style={{fontSize: 2 + 'rem',color: 'white'}}>You touched: {this.state.itemName}</p>
+                <p style={{fontSize: 2 + 'rem',color: 'white'}}>Score : {this.state.itemValue}</p>
+                </div>
                 {false && <p style={{ position: 'fixed', bottom: 0, left: 16 }}>Debug: <input type="checkbox" onChange={this.handleDebugToggle} ref={ n => this.debug = n }/></p>}
                 {this.state.debug && <DebugState data={this.state} />}
+            </div>
+            </div>
+            
             </div>
         )
     }

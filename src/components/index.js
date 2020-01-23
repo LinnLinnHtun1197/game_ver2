@@ -5,4 +5,5 @@ export Helper from './Helper';
 export GameInfo from './GameInfo';
 export Player from './Player';
 export Square from './Square';
-export Tutorial from './Tutorial'
+export Tutorial from './Tutorial';
+export Finish from './Finish';

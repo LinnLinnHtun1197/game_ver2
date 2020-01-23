@@ -23,7 +23,6 @@ class Player extends Component {
     
     render() {        
         const { size, position: { top, left }} = this.props;
-        
         return (
             <div ref={ n => { this.player = n }} >
                 <Square 
