@@ -11,7 +11,7 @@
   "author": "Brandon Stilson <bbstilson@fastmail.com> (brandonstilson.com)",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "history": "^4.10.1",
     "prop-types": "^15.7.2",
     "react": "^15.1.0",
